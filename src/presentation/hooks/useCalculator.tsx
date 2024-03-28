@@ -19,16 +19,22 @@ const useCalculator = () => {
 
   const lastOperation = useRef<Operator>();
 
+  
   useEffect(() => {
-
     if(lastOperation.current) {
       const firstFormulaPart = formula.split(' ').at(0);
       setFormula(`${firstFormulaPart} ${lastOperation.current} ${number}`);
     }else{
       setFormula(number);
     }
-    
   }, [number]);
+
+
+  useEffect(() => {
+    const subResult = calculateSubResult();
+    setPreviousNumber(`${subResult}`);
+  }, [formula]);
+
 
   const buildNumber = ( numberString: string ) => {
 
@@ -89,6 +95,8 @@ const useCalculator = () => {
 
 
   const setLastNumber = () => {
+    calculateResult();
+
     if(number.endsWith('.')){
       setPreviousNumber(number.slice(0, -1));
     }else{
@@ -122,7 +130,7 @@ const useCalculator = () => {
 
   const calculateResult = () => {
     const result = calculateSubResult();
-    setNumber(`${result}`);
+    setFormula(`${result}`);
 
     lastOperation.current = undefined;
     setPreviousNumber('0');
